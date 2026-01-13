@@ -72,3 +72,24 @@ public:
         return output;
     }
 
+    int predict(const std::vector<double>& features, double epsilon) {
+        std::uniform_real_distribution<double> dist(0.0, 1.0);
+        if (dist(rng) < epsilon) return std::uniform_int_distribution<int>(0, NUM_ACTIONS - 1)(rng);
+        int best_action = 0;
+        double max_val = -1e9;
+        for(int a=0; a<NUM_ACTIONS; ++a) {
+            double val = activation(features, a);
+            if(val > max_val) { max_val = val; best_action = a; }
+        }
+        return best_action;
+    }
+
+    double max_activation(const std::vector<double>& features) {
+        double max_val = -1e9;
+        for(int a=0; a<NUM_ACTIONS; ++a) {
+            double val = activation(features, a);
+            if(val > max_val) max_val = val;
+        }
+        return max_val;
+    }
+
