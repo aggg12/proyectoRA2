@@ -66,3 +66,9 @@ public:
         }
     }
 
+    double activation(const std::vector<double>& features, int action_neuron_idx) {
+        double output = 0;
+        for(int i=0; i<NUM_FEATURES; ++i) output += features[i] * weights[i][action_neuron_idx];
+        return output;
+    }
+
