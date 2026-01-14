@@ -22,14 +22,30 @@ LDFLAGS := -L$(ALE_DIR) -lale -lSDL -lSDLmain -lz -Wl,-rpath=$(ALE_DIR)
 COMMON_SRCS := $(SRC_DIR)/RamExtractor.cpp
 COMMON_OBJS := $(COMMON_SRCS:.cpp=.o)
 
-TARGETS :=  manual_check
+TARGETS :=  level0 level1 level2 level3 manual_check
 
 all: $(TARGETS)
 
 manual_check: $(SRC_DIR)/manual_check.o $(COMMON_OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
+level0: $(SRC_DIR)/level0_perceptron.o $(COMMON_OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+level1: $(SRC_DIR)/level1_neural_bp.o $(COMMON_OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+level2: $(SRC_DIR)/level2_neural_ga.o $(COMMON_OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+level3: $(SRC_DIR)/level3_neuroevolution.o $(COMMON_OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+clean:
+	rm -f $(SRC_DIR)/*.o $(TARGETS) *.weights
