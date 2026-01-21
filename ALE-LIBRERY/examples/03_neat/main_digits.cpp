@@ -146,7 +146,7 @@ int main() {
              // Pedimos mucha consistencia antes de subir, para no "quemar" especies inmaduras
              if (consecutiveWins >= 25) { 
                  noiseLevel += 0.01; // Subimos despacito, solo 1%
-                 std::cout << " [!!!] Especie muy robusta (" << consecutiveWins << " gens). Subiendo dificultad a " << int(noiseLevel*100) << "%" << std::endl;
+                 std::cout << " [!!!] Dominio consistente (" << consecutiveWins << " gens). Subiendo dificultad a " << int(noiseLevel*100) << "%" << std::endl;
                  consecutiveWins = 0;
              }
         } else {
@@ -163,13 +163,13 @@ int main() {
             maxNoiseReached = noiseLevel;
             bestFitnessAtMaxNoise = bestFitness;
             isNewRecord = true;
-            std::cout << " [SAVE] Nuevo Récord de Ruido NEAT: " << int(maxNoiseReached*100) << "%!" << std::endl;
+            std::cout << " [Nuevo CAMPEON] Ruido: " << int(maxNoiseReached*100) << "% | Fitness: " << bestFitness << std::endl;
         } 
         else if (noiseLevel == maxNoiseReached) {
             if (bestFitness > bestFitnessAtMaxNoise) {
                 bestFitnessAtMaxNoise = bestFitness;
                 isNewRecord = true;
-                // std::cout << " [SAVE] Mejor Fitness NEAT." << std::endl; // Opcional, para no spaamear
+                std::cout << " [Nuevo CAMPEON] Ruido: " << int(maxNoiseReached*100) << "% | Fitness: " << bestFitness << std::endl;
             }
         }
 
@@ -188,7 +188,7 @@ int main() {
              // Crear Network a partir del genoma para guardarlo
              // Usamos directamente el método save del genoma
              genomes[bestIdx].save("neat_digits_model.txt");
-             // std::cout << " [SAVE] Modelo guardado." << std::endl;
+             std::cout << "   (Modelo guardado en 'neat_digits_model.txt')" << std::endl;
         }
         // ------------------------------------
 

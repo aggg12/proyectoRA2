@@ -42,20 +42,36 @@ int main(int argc, char** argv) {
     // 5. Evaluar
     int hits = 0;
     std::cout << "\nPredicciones del Modelo:" << std::endl;
-    std::cout << std::string(50, '-') << std::endl;
-    std::cout << " Dígito |   Predicción   | Confianza | Resultado" << std::endl;
-    std::cout << std::string(50, '-') << std::endl;
+    std::cout << std::string(65, '-') << std::endl;
+    std::cout << " Dígito | Predicción | Confianza | 2do Mejor (Conf) | Resultado" << std::endl;
+    std::cout << std::string(65, '-') << std::endl;
 
     for (const auto& sample : data) {
         auto outputs = net.activate(sample.pixels);
         
-        // Interpretar la salida (Argmax)
-        int predicted = 0;
-        double maxVal = -1.0;
-        for(size_t i=0; i<outputs.size(); ++i) {
-            if(outputs[i] > maxVal) {
-                maxVal = outputs[i];
+        // Interpretar la salida (Argmax y 2nd Best)
+        int predicted = -1;
+        double maxVal = -1e9;
+        
+        int runnerUp = -1;
+        double runnerUpVal = -1e9;
+
+        // Nota: NEAT puede tener menos outputs si no ha evolucionado todos, manejamos eso
+        size_t limit = (outputs.size() < 10) ? outputs.size() : 10;
+
+        for(size_t i=0; i<10; ++i) {
+            double val = (i < limit) ? outputs[i] : 0.0;
+
+            if(val > maxVal) {
+                // El antiguo mejor pasa a ser segundo
+                runnerUpVal = maxVal;
+                runnerUp = predicted;
+                
+                maxVal = val;
                 predicted = (int)i;
+            } else if (val > runnerUpVal) {
+                runnerUpVal = val;
+                runnerUp = (int)i;
             }
         }
 
@@ -63,11 +79,12 @@ int main(int argc, char** argv) {
         bool correct = (predicted == sample.label);
         if (correct) hits++;
         
-        std::cout << "   " << sample.label << "    |       " << predicted << "        |" 
-                  << std::fixed << std::setprecision(2) << std::setw(6) << maxVal 
-                  << "   |  " << (correct ? "OK" : "FAIL") << std::endl;
+        std::cout << "   " << sample.label << "    |      " << predicted << "     |" 
+                  << std::fixed << std::setprecision(2) << std::setw(6) << maxVal << "    |"
+                  << "    " << runnerUp << " (" << std::setw(4) << runnerUpVal << ")   |  " 
+                  << (correct ? "OK" : "FAIL") << std::endl;
     }
-    std::cout << std::string(50, '-') << std::endl;
+    std::cout << std::string(65, '-') << std::endl;
 
     double accuracy = (double)hits / data.size() * 100.0;
     std::cout << "\nResumen:" << std::endl;

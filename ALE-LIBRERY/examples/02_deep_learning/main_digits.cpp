@@ -158,6 +158,11 @@ int main() {
                     globalBest = ag; 
                     globalBestNoiseLevel = noiseLevel;
                     std::cout << " [Nuevo CAMPEON] Ruido: " << int(noiseLevel*100) << "% | Fitness: " << bestFitness << std::endl;
+                    
+                    // Guardar inmediatamente el mejor modelo encontrado
+                    globalBest.brain.save("digits_model.txt");
+                    std::cout << "   (Modelo guardado en 'digits_model.txt')" << std::endl;
+                    
                     break; 
                 }
             }
