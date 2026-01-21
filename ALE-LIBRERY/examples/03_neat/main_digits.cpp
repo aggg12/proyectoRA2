@@ -95,8 +95,16 @@ int main() {
             int hits = 0;
 
             for (const auto& sample : data) {
+                 // --- PROTECCION CONTRA OLVIDO CATASTROFICO ---
+                 // Mezclamos ejemplos limpios y sucios aleatoriamente dentro del rango de dificultad actual
+                 double currentSampleNoise = 0.0;
+                 if (noiseLevel > 0.0001) {
+                     std::uniform_real_distribution<double> noiseDist(0.0, noiseLevel);
+                     currentSampleNoise = noiseDist(rng);
+                 }
+
                  // Aplicamos RUIDO al input para que no memoricen
-                 std::vector<double> inputs = addNeatNoise(sample.pixels, noiseLevel, rng);
+                 std::vector<double> inputs = addNeatNoise(sample.pixels, currentSampleNoise, rng);
                  auto outputs = net.activate(inputs);
 
                  double sampleError = 0.0;

@@ -67,15 +67,16 @@ int main(int argc, char** argv) {
     const auto& data = task.getData();
 
     // 3. Configuración del test
-    // Probaremos con diferentes niveles de ruido
-    std::vector<double> noiseLevels = {0.05, 0.10, 0.20}; // 5%, 10%, 20% de pixeles corruptos
+    // ESCALA DE DIFICULTAD (Fácil a Medio)
+    std::vector<double> noiseLevels = {0.00, 0.05, 0.10, 0.15, 0.20}; 
 
     for (double noiseRate : noiseLevels) {
         std::cout << "\n>>> NIVEL DE RUIDO: " << (int)(noiseRate * 100) << "% <<<" << std::endl;
-        std::cout << "(Probabilidad de que un pixel se invierta)\n" << std::endl;
+        if (noiseRate == 0.0) std::cout << "(Datos Perfectos - Control de Calidad)\n" << std::endl;
+        else std::cout << "(Probabilidad de pixel invertido)\n" << std::endl;
 
         int totalHits = 0;
-        int trialsPerDigit = 10; // Probamos 10 variaciones por cada digito
+        int trialsPerDigit = 100; // Muestras por digito para estadística fiable
 
         for (const auto& sample : data) {
             int digitHits = 0;

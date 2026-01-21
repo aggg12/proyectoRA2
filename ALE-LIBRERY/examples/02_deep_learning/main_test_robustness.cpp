@@ -68,14 +68,18 @@ int main(int argc, char** argv) {
     const auto& data = task.getData();
 
     // 3. Configuración del test
-    std::vector<double> noiseLevels = {0.05, 0.10, 0.20}; 
+    // ESCALA DE DIFICULTAD (Fácil a Medio)
+    // 0.00: Test de Sanidad (¿Recuerda lo básico?)
+    // 0.20: Límite actual de entrenamiento
+    std::vector<double> noiseLevels = {0.00, 0.05, 0.10, 0.15, 0.20}; 
 
     for (double noiseRate : noiseLevels) {
         std::cout << "\n>>> NIVEL DE RUIDO: " << (int)(noiseRate * 100) << "% <<<" << std::endl;
-        std::cout << "(Probabilidad de que un pixel se invierta)\n" << std::endl;
+        if (noiseRate == 0.0) std::cout << "(Datos Perfectos - Control de Calidad)\n" << std::endl;
+        else std::cout << "(Probabilidad de pixel invertido)\n" << std::endl;
 
         int totalHits = 0;
-        int trialsPerDigit = 10; 
+        int trialsPerDigit = 100; // Muestras por digito para estadística fiable 
 
         for (const auto& sample : data) {
             int digitHits = 0;

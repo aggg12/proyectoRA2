@@ -79,8 +79,17 @@ int main() {
             // Esto evita que memoricen una sola foto y los obliga a generalizar.
             for (const auto& sample : data) {
                 
-                // Aplicamos ruido dinámico
-                std::vector<double> inputs = addTrainingNoise(sample.pixels, noiseLevel, rng);
+                // --- PROTECCION CONTRA OLVIDO CATASTROFICO ---
+                // En vez de aplicar siempre 'noiseLevel', elegimos un ruido al azar entre 0 y el Nivel Actual.
+                // Así la red ve una mezcla constante de ejemplos LIMPIOS, FACILES y DIFICILES.
+                double currentSampleNoise = 0.0;
+                if (noiseLevel > 0.0001) {
+                     std::uniform_real_distribution<double> noiseDist(0.0, noiseLevel);
+                     currentSampleNoise = noiseDist(rng);
+                }
+
+                // Aplicamos el ruido calculado para esta muestra especifica
+                std::vector<double> inputs = addTrainingNoise(sample.pixels, currentSampleNoise, rng);
 
                 auto outputs = agent.brain.feedForward(inputs);
                 
